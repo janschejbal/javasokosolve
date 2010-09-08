@@ -1,3 +1,4 @@
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,7 @@ public class LDFSSolver { // Limited depth first search
 	
 	private Board startBoard;
 	
-	private HashMap<MiniState,MoveTree> alreadySeen = new HashMap<MiniState,MoveTree>();
-	// May prevent garbage to be collected. use weak ref?
+	private HashMap<MiniState,WeakReference<MoveTree>> alreadySeen = new HashMap<MiniState,WeakReference<MoveTree>>();
 	
 	private MoveTree tree = new MoveTree(null, null); // root of the tree
 	
@@ -53,14 +53,15 @@ public class LDFSSolver { // Limited depth first search
 			}
 			
 			MiniState ministate = new MiniState(currentBoard);
-			MoveTree otherSubtree = alreadySeen.get(ministate);
+			WeakReference<MoveTree> otherSubtreeRef = alreadySeen.get(ministate);
 			
-			if (otherSubtree == null ) {
-				alreadySeen.put(ministate, subtree);
+			if (otherSubtreeRef == null ) {
+				alreadySeen.put(ministate, new WeakReference<MoveTree>(subtree));
 				subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
 			} else {
 				// we already had this state
-				if (otherSubtree.isFinished()) {
+				MoveTree otherSubtree = otherSubtreeRef.get();
+				if (otherSubtree == null || otherSubtree.isFinished()) {
 					// there is no solution this way, move along
 					subtree.makeFinished();
 					return;
@@ -75,7 +76,7 @@ public class LDFSSolver { // Limited depth first search
 					// take over
 					otherSubtree.makeFinished();
 					// and note that this is the currently best solution
-					alreadySeen.put(ministate, subtree);
+					alreadySeen.put(ministate, new WeakReference<MoveTree>(subtree));
 				} else {
 					// else forget about this, other tree handles it
 					subtree.makeFinished();

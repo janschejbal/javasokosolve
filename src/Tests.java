@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 
@@ -12,21 +13,25 @@ public class Tests {
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {		
-//		Board b = BoardLoader.loadFromLevelFile(
-////				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\dimitri_and_yorick.txt",
-//				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\default.txt",
-//				0);
+		Board b = BoardLoader.loadFromLevelFile(
+//				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\dimitri_and_yorick.txt",
+				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\default.txt",
+				0);
 		
 		
-		Board b = BoardLoader.loadFromServer(9);
+//		Board b = BoardLoader.loadFromServer(9);
 
 		System.out.println(b);
 		System.out.println("Solving...");
-		LDFSSolver solver = new LDFSSolver(b);
-		printSolution(b, solver.solve(100,100));
-		solver  =null;
-		System.gc();
+
+		long startTime = (new Date()).getTime();
 		
+		LDFSSolver solver = new LDFSSolver(b);
+		printSolution(b, solver.solve(50,50));
+
+		double neededTime = (new Date()).getTime() - startTime;
+		
+		System.out.format("Run took %.2f seconds (%.2f minutes)\n", neededTime/1000, neededTime/60000);
 		
 		// does not find solution for default level 0, so there is a bug
 		// probably something excludes moves that should not be excluded
