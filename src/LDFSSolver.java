@@ -14,8 +14,6 @@ public class LDFSSolver { // Limited depth first search
 	
 	private HashMap<MiniState,WeakReference<MoveTree>> alreadySeen = new HashMap<MiniState,WeakReference<MoveTree>>();
 	
-	private MoveTree tree = new MoveTree(null, null); // root of the tree
-	
 	public LDFSSolver(Board startBoard) {
 		this.startBoard = startBoard;
 	}
@@ -26,7 +24,10 @@ public class LDFSSolver { // Limited depth first search
 			while (currentMaxDepth < depthLimit) {
 				currentMaxDepth += step;
 				System.out.println("Trying to solve with max depth of " + currentMaxDepth);
-				solveStep(currentMaxDepth, tree);
+				// always use a fresh tree, always use fresh seen map!
+				alreadySeen = new HashMap<MiniState,WeakReference<MoveTree>>();
+				System.gc();
+				solveStep(currentMaxDepth, new MoveTree(null, null)); 
 			}
 		} catch (SolutionFoundException e) {
 			return e.solution;
@@ -35,7 +36,12 @@ public class LDFSSolver { // Limited depth first search
 	}
 	
 	private void solveStep(int limit, MoveTree subtree) throws SolutionFoundException {
-		if (subtree.isFinished() || subtree.getDepth() > limit) return;
+		if (subtree.isFinished()) return;
+		
+		if (subtree.getDepth() > limit) {
+			subtree.makeFinished();
+			return;
+		}
 		
 		if (!subtree.seen) {
 			subtree.seen = true;
@@ -60,6 +66,11 @@ public class LDFSSolver { // Limited depth first search
 				subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
 			} else {
 				// we already had this state
+				
+				/* commenting out complex handling for now, it is obviously broken
+				 *  (as it does not find a solution in 100 steps for the first default sokoban board)
+				 // what happens if current node is moved?
+				
 				MoveTree otherSubtree = otherSubtreeRef.get();
 				if (otherSubtree == null || otherSubtree.isFinished()) {
 					// there is no solution this way, move along
@@ -79,9 +90,11 @@ public class LDFSSolver { // Limited depth first search
 					alreadySeen.put(ministate, new WeakReference<MoveTree>(subtree));
 				} else {
 					// else forget about this, other tree handles it
+					 
+				for now: just assume that the other subtree takes care of it */
 					subtree.makeFinished();
 					return;
-				}
+				/*}*/
 			}
 			
 		}
