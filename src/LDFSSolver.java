@@ -36,7 +36,10 @@ public class LDFSSolver { // Limited depth first search
 	}
 	
 	private void solveStep(int limit, MoveTree subtree) throws SolutionFoundException {
-		if (subtree.isFinished()) return;
+		if (subtree.isFinished()) {
+			System.out.println("re-visited solved node. this should not happen");
+			return;
+		}
 		
 		if (subtree.getDepth() > limit) {
 			subtree.makeFinished();

@@ -27,7 +27,7 @@ public class Tests {
 		long startTime = (new Date()).getTime();
 		
 		LDFSSolver solver = new LDFSSolver(b);
-		printSolution(b, solver.solve(1000,50));
+		printSolution(b, solver.solve(2000,500));
 
 		double neededTime = (new Date()).getTime() - startTime;
 		
