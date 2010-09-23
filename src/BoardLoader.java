@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -136,23 +137,59 @@ public class BoardLoader {
 
         out.println(boardNumber);
         
-        byte[] boardbytes = new byte[1024];
+        byte[] boardbytes = new byte[4*1024];
         int bytesRead = inRaw.read(boardbytes);
         String boardString = new String(boardbytes,0,bytesRead);
         //System.out.println(boardString);
-        
-        // We are not checking solutions here.
-        // the following code may be used to do it
-        // String solution = new String("U R R D U U L D L L U L L D R R R R L D D R U R U D L L U R");
-        // out.println(solution);
-        // result = in.readLine();
-        // System.out.println(result);
         
         out.close();
         in.close();
         socket.close();
         
         return loadFromString(boardString);
+	}
+	
+	/**
+	 * Checks if a given solution is correct.
+	 * 
+	 * @param level The level number (same as given to {@link #loadFromServer(int)})
+	 * @param solution The solution string, for example "rrDldRRR"
+	 * 
+	 * @return true if the server considered the solution correct, false if it considered it wrong
+	 * 
+	 * @throws UnknownHostException if the host name lookup for the server fails.
+	 * @throws IOException if any IO problem during communication with the server occurs.
+	 * 
+	 * @throws RuntimeException if the server returns an unexpected answer.
+	 */
+	public static boolean checkSolution(int level, String solution) throws UnknownHostException, IOException {
+		Socket socket = new Socket("cvap103.nada.kth.se",5555);
+        InputStream inRaw = socket.getInputStream();
+        BufferedReader in = new BufferedReader(new InputStreamReader(inRaw));
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+        out.println(level);
+        
+        byte[] boardbytes = new byte[4*1024];
+        inRaw.read(boardbytes); // throw away board
+  
+        out.println(solution);
+        
+        String result = in.readLine();
+
+        out.close();
+        in.close();
+        socket.close();
+
+        
+        if (result.startsWith("Good solution")) {
+        	return true;
+        } else if (result.startsWith("Wrong solution")) {
+        	return false;
+        } else {
+        	throw new RuntimeException("Unknown response to solution: " + result);
+        }
+        
 	}
 
 	private static String padBoard(String boardstring) {
