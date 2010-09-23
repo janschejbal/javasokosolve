@@ -19,7 +19,7 @@ public class Tests {
 				0);
 		
 		
-//		Board b = BoardLoader.loadFromServer(4);
+//		Board b = BoardLoader.loadFromServer(1);
 
 		System.out.println(b);
 		System.out.println("Solving...");

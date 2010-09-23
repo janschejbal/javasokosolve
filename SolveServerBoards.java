@@ -45,7 +45,8 @@ public class SolveServerBoards {
 			return;
 		}
 		
-		String solutionString = ""; // TODO: Use PlayerMove here!
+		PlayerMove player = new PlayerMove(b, solution);
+		String solutionString = player.findPath();
 
 		boolean result = BoardLoader.checkSolution(number, solutionString);
 		

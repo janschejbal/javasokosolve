@@ -1,8 +1,7 @@
-import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * A solver based on a limited depth first search
@@ -24,9 +23,7 @@ public class LDFSSolver { // Limited depth first search
 		try {
 			while (currentMaxDepth < depthLimit) {
 				currentMaxDepth += step;
-				//System.out.println("Trying to solve with max depth of " + currentMaxDepth);
-				// always use a fresh tree, always use fresh seen map!
-				//alreadySeen = new HashMap<MiniState,Integer>();
+				System.out.println("Trying to solve with max depth of " + currentMaxDepth);
 				System.gc();
 				solveStep(currentMaxDepth, new MoveTree(null, null)); 
 			}
@@ -52,9 +49,8 @@ public class LDFSSolver { // Limited depth first search
 			Board currentBoard = startBoard.partialClone();
 			currentBoard.move(subtree.getMoveChain());
 			
-			
 			currentBoard.calculateMaps();
-
+	
 			if (currentBoard.isSolved()) throw new SolutionFoundException(subtree.getMoveChain());
 			
 			if (currentBoard.isDeadlocked()) {
@@ -64,6 +60,7 @@ public class LDFSSolver { // Limited depth first search
 			
 			MiniState ministate = new MiniState(currentBoard);
 			FoundPathInfo otherPath = alreadySeen.get(ministate);
+			
 			
 			if (otherPath != null && otherPath.size() < subtree.getDepth()) {
 				// we already had this state on a LOWER level
@@ -90,6 +87,7 @@ public class LDFSSolver { // Limited depth first search
 					return;
 				} else {
 					// if we have not done it in this iteration (only in a former one): do it!
+					otherPath.iteration = limit;
 					subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
 				}
 			} else {
@@ -113,7 +111,7 @@ public class LDFSSolver { // Limited depth first search
 		}		
 		
 	}
-	
+
 	private class SolutionFoundException extends Exception {
 		private static final long serialVersionUID = -7670753785339780577L;
 		public final List<Move> solution;
