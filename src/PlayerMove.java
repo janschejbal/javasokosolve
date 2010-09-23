@@ -3,7 +3,7 @@ import java.util.List;
 import java.rmi.NotBoundException;
 
 /**
- * A class to move the player around to puch the boxes
+ * A class to move the player around to push the boxes
  * @author Calle
  *
  */
@@ -18,6 +18,7 @@ public class PlayerMove {
 		this.startBoard = startBoard;
 		this.moveSequence = moveSequence;
 		
+
 		// To use Dijkstras we first build a matrix for the graph
 		this.graph = new Vortex[this.startBoard.floor.length][this.startBoard.floor[0].length];
 		//Create all vortexes in the matrix
@@ -26,9 +27,6 @@ public class PlayerMove {
 		this.graph[0][0].isRoot = true;
 		this.graph[0][0].dist = 0;
 		
-		// start the search
-		this.findPath(this.moveSequence); 
-			
 		
 	}
 
@@ -47,12 +45,13 @@ public class PlayerMove {
 		
 	}
 
-	public String findPath(List<Move> dir) {
+	public String findPath() {
 		String movements = "";
-		this.createVortexes();
+		this.startBoard.calculateMaps();
+		List<Move> dir = this.moveSequence;
 		for (Move curr : dir) {
 			try {
-				movements += this.localPath(curr.box);
+				movements += this.localPath(curr);
 			} catch (NotBoundException e) {
 				System.out.println(e.getMessage());
 				break;
@@ -64,15 +63,26 @@ public class PlayerMove {
 
 	// I use the NotBoundException for now, even if it's not 100% correct, it still close enough
 	// in the name to be understood as the "There is no path to your goal"exception. -- aiquen
-	public String localPath(Pos box) throws NotBoundException {
+	public String localPath(Move box) throws NotBoundException {
 		String steps = "";
+		this.createVortexes();
+		int dir = box.direction;
+		int dx, dy;
+		// The inverted values for direction. Since we are pushing, we want to be on the other side of the box direction
+		switch (dir) {
+			case 1: dx = 0; dy = -1; break;
+			case 2: dx = -1; dy = 0; break;
+			case 3: dx = 0; dy = 1; break;
+			case 4: dx = 1; dy = 0; break;
+		}
 		while (this.nodequeue.size() > 0) {
 			Vortex u = this.leastDist();
 			if (u.dist == Integer.MAX_VALUE) {
 				throw new NotBoundException("No awailable path to target tile!");
 			}
-			if (u.x == box.x && u.y == box.y) {
+			if (u.x == box.box.x + dx && u.y == box.box.y + dy) {
 				steps = this.getPath(u);
+				this.startBoard.move(box.box, dir);
 				break;
 			}
 			if (u.x + 1 < this.graph.length)
@@ -102,7 +112,7 @@ public class PlayerMove {
 
 		return returnNode;
 	}
-
+	//TODO - Everything in this method. Sunborg is in charge -- aiquen
 	public String getPath(Vortex node) {
 		return "";
 
