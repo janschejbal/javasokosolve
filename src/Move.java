@@ -33,5 +33,15 @@ public class Move {
 		return "Move("+box+","+dirstr+")";
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		try {
+			Move other = (Move)obj;
+			return other.box.equals(this.box) && other.direction == this.direction;
+		} catch (Exception e) {
+			return false; // null, wrong class, ...
+		}
+	}
+	
 
 }

@@ -27,7 +27,7 @@ public class Tests {
 		long startTime = (new Date()).getTime();
 		
 		LDFSSolver solver = new LDFSSolver(b);
-		printSolution(b, solver.solve(2000,500));
+		printSolution(b, solver.solve(1000,10));
 
 		double neededTime = (new Date()).getTime() - startTime;
 		
@@ -36,8 +36,6 @@ public class Tests {
 		// does not find solution for default level 0, so there is a bug
 		// probably something excludes moves that should not be excluded
 		// or does not correctly handle shorter paths to already visited nodes
-
-
 	}
 	
 	public static void printSolution(Board startBoard, List<Move> solution) {
