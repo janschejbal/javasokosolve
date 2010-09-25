@@ -19,7 +19,7 @@ public class SolveServerBoards {
 	
 	private static void testBoard(int number) throws IOException, InterruptedException {
 		Board b = BoardLoader.loadFromServer(number);
-		System.out.format("Solving board number %3d...", number);
+		System.out.format("Solving board number %3d... ", number);
 				
 		SolverThread thread = new SolverThread(b);
 
@@ -28,7 +28,7 @@ public class SolveServerBoards {
 
 		while (!thread.isFinished) {
 			synchronized (thread.waitingObject) {
-				thread.waitingObject.wait(1000);
+				thread.waitingObject.wait(100);
 			}
 			double elapsedTime = (new Date()).getTime() - startTime;
 			if (elapsedTime > TIMEOUT) {
@@ -45,8 +45,8 @@ public class SolveServerBoards {
 			return;
 		}
 		
-		PlayerMove player = new PlayerMove(b, solution);
-		String solutionString = player.findPath();
+		//PlayerMove player = new PlayerMove(b, solution);
+		String solutionString = "";//player.findPath();
 
 		boolean result = BoardLoader.checkSolution(number, solutionString);
 		

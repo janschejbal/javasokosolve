@@ -1,4 +1,5 @@
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -161,6 +162,7 @@ public class Board {
 				if ( canMove(boxes[box],dir) ) result.add(new Move(boxes[box],dir));
 			}
 		}
+		//Collections.shuffle(result);
 		return result;
 	}
 	
@@ -284,7 +286,7 @@ public class Board {
 					// box can move -> remove it
 					hasRemoved = true;
 					workBoard.boxmap[box.x][box.y] = false;
-					break; // break the for loop
+					//break; // break the for loop
 				}
 			}
 		}

@@ -52,6 +52,7 @@ public class Tests {
 			System.out.println();
 			System.out.println(startBoard);
 		}
+		System.out.println("" + solution.size() + " moves");
 	}
 
 }
