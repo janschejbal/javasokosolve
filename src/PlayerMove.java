@@ -117,7 +117,7 @@ public class PlayerMove {
 		nodequeue.remove(returnNode);
 		return returnNode;
 	}
-	//TODO - Everything in this method. Sunborg is in charge -- aiquen
+	
 	public String getPath(Vortex node) {
 		if (node.isRoot) return "";
 		
