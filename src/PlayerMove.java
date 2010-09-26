@@ -131,7 +131,6 @@ public class PlayerMove {
 		if (dy == -1) code = 'u';
 		
 		return getPath(node.parent)+code;
-
 	}
 	
 	public void updateDist(Vortex node, Vortex parent) {
