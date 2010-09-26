@@ -18,6 +18,7 @@ public class PlayerMove {
 		this.startBoard = startBoard;
 		this.moveSequence = moveSequence;
 		
+		startBoard.calculateMaps(); // make sure maps are calculated! 
 
 		// To use Dijkstras we first build a matrix for the graph
 		this.graph = new Vortex[this.startBoard.floor.length][this.startBoard.floor[0].length];
@@ -67,7 +68,8 @@ public class PlayerMove {
 		String steps = "";
 		this.createVortexes();
 		int dir = box.direction;
-		int dx, dy;
+		int dx = 0;
+		int dy = 0;
 		// The inverted values for direction. Since we are pushing, we want to be on the other side of the box direction
 		switch (dir) {
 			case 1: dx = 0; dy = -1; break;
