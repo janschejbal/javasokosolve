@@ -69,9 +69,9 @@ public class PlayerMove {
 		int dy = 0;
 		// The inverted values for direction. Since we are pushing, we want to be on the other side of the box direction
 		switch (dir) {
-			case 1: dx = 0; dy = -1; break;
+			case 1: dx = 0; dy = 1; break;
 			case 2: dx = -1; dy = 0; break;
-			case 3: dx = 0; dy = 1; break;
+			case 3: dx = 0; dy = -1; break;
 			case 4: dx = 1; dy = 0; break;
 		}
 		while (this.nodequeue.size() > 0) {
@@ -81,6 +81,12 @@ public class PlayerMove {
 			}
 			if (u.x == box.box.x + dx && u.y == box.box.y + dy) {
 				steps = this.getPath(u);
+				switch (dir) {
+					case 1: steps = steps + "U" ; break;
+					case 2: steps = steps + "R" ; break;
+					case 3: steps = steps + "D" ; break;
+					case 4: steps = steps + "L" ; break;
+				}				
 				this.startBoard.move(box.box, dir);
 				break;
 			}
@@ -113,7 +119,18 @@ public class PlayerMove {
 	}
 	//TODO - Everything in this method. Sunborg is in charge -- aiquen
 	public String getPath(Vortex node) {
-		return "";
+		if (node.isRoot) return "";
+		
+		int dx = node.x - node.parent.x;
+		int dy = node.y - node.parent.y;
+		
+		char code = '#';
+		if (dx == 1) code = 'r';
+		if (dx == -1) code = 'l';
+		if (dy == 1) code = 'd';
+		if (dy == -1) code = 'u';
+		
+		return getPath(node.parent)+code;
 
 	}
 	

@@ -23,7 +23,7 @@ public class LDFSSolver { // Limited depth first search
 		try {
 			while (currentMaxDepth < depthLimit) {
 				currentMaxDepth += step;
-				System.out.println("Trying to solve with max depth of " + currentMaxDepth);
+				//System.out.println("Trying to solve with max depth of " + currentMaxDepth);
 				// always use a fresh tree, always use fresh seen map!
 				alreadySeen = new HashMap<MiniState,WeakReference<MoveTree>>();
 				System.gc();

@@ -19,7 +19,7 @@ public class SolveServerBoards {
 	
 	private static void testBoard(int number) throws IOException, InterruptedException {
 		Board b = BoardLoader.loadFromServer(number);
-		System.out.format("Solving board number %3d...", number);
+		System.out.format("Solving board number %3d... ", number);
 				
 		SolverThread thread = new SolverThread(b);
 
