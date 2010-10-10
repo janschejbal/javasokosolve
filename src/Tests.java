@@ -19,7 +19,7 @@ public class Tests {
 				0);
 		
 		
-//		Board b = BoardLoader.loadFromServer(4);
+//		Board b = BoardLoader.loadFromServer(1);
 
 		System.out.println(b);
 		System.out.println("Solving...");
@@ -27,7 +27,7 @@ public class Tests {
 		long startTime = (new Date()).getTime();
 		
 		LDFSSolver solver = new LDFSSolver(b);
-		printSolution(b, solver.solve(1000,10));
+		printSolution(b, solver.solve(1000,100));
 
 		double neededTime = (new Date()).getTime() - startTime;
 		
@@ -52,6 +52,7 @@ public class Tests {
 			System.out.println();
 			System.out.println(startBoard);
 		}
+		System.out.println("" + solution.size() + " moves");
 	}
 
 }

@@ -1,4 +1,5 @@
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,9 @@ public class Board {
 	
 	/** A map of the tiles on which players can walk and/or boxes can be placed. */
 	public boolean[][] floor;
+	
+	/** A map of the tiles on which boxes can be placed without loosing the game. */
+	public boolean[][] safeTiles;
 	
 	
 	/** An array containing the coordinates of all targets */
@@ -45,9 +49,18 @@ public class Board {
 	/**
 	 * Calculates and sets the box and reachable tile maps. 
 	 */
-	public void calculateMaps() {
-		targetmap = new boolean[floor.length][floor[0].length]; // auto-initializes to false
-		
+	public void calculateMaps() {	
+		if (targetmap == null) {
+			targetmap = new boolean[floor.length][floor[0].length]; // auto-initializes to false
+			for (Pos p : targets) {
+				targetmap[p.x][p.y] = true;
+			}		
+		}
+
+		if (safeTiles == null) {
+			calcSafeTiles();
+		}
+			
 		boxes = new Pos[targets.length];
 		int storeBoxAt = 0;
 		for (byte x = 0; x < boxmap.length; x++) {
@@ -59,13 +72,41 @@ public class Board {
 		}
 		assert(storeBoxAt == boxes.length);
 		
-		for (Pos p : targets) {
-			targetmap[p.x][p.y] = true;
-		}
+
 		reachable = new boolean[floor.length][floor[0].length]; // auto-initializes to false
 		addReachable(player.x, player.y);
 	}
 	
+	/**
+	 * Calculates the safe tile map. Requires target map!
+	 */
+	private void calcSafeTiles() {
+		safeTiles = new boolean[floor.length][floor[0].length]; // auto-initializes to false
+		for (byte x = 0; x < floor.length; x++) {
+			for (byte y = 0; y < floor[0].length; y++) {
+				if (floor[x][y]) { // if its not floor, we cannot push anything there
+					if (targetmap[x][y]) {
+						safeTiles[x][y] = true;
+						continue;
+					}
+					try {
+						if ( ((!floor[x][y-1]) || (!floor[x][y+1])) &&
+								((!floor[x-1][y]) || (!floor[x+1][y])) ) {
+							// both a horizontal and a vertical neighbour are walls
+							continue; // --> corner -> not safe, leave at false
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						// on correct fields, tiles on the edge of the board
+						// are either walls or outside the reachable area.
+						continue;
+					}
+					
+					safeTiles[x][y] = true; // TODO better rules, fallback for now
+				}
+			}
+		}
+	}
+
 	/**
 	 * Checks if the given coordinate can be stepped on. If yes, it
 	 *   a) marks it as reachable and 
@@ -110,7 +151,7 @@ public class Board {
 		}
 		
 		return reachable[box.x - xdir][box.y - ydir] && // can get to pushing pos
-				floor[box.x+xdir][box.y+ydir] && // there is a place to push to
+				safeTiles[box.x+xdir][box.y+ydir] && // there is a acceptable place to push to
 				!boxmap[box.x+xdir][box.y+ydir]; // and it is free
 	}
 	
@@ -121,6 +162,7 @@ public class Board {
 				if ( canMove(boxes[box],dir) ) result.add(new Move(boxes[box],dir));
 			}
 		}
+		//Collections.shuffle(result);
 		return result;
 	}
 	
@@ -175,25 +217,25 @@ public class Board {
 	
 	/**
 	 * Creates an independent copy of this board, without the maps.
+	 * Things that are not meant to change (floor, targets, safe tiles, ...) are shared references!
 	 * @return the copy
 	 */
 	public Board partialClone() {
 		Board result = new Board(floor.length, floor[0].length,targets.length);
 		
-		for (int x = 0; x < floor.length; x++) {
-			result.floor[x] = floor[x].clone();
-			result.boxmap[x] =
-				boxmap[x].clone();
-		}
 		
+		result.floor = floor;
+		result.safeTiles = safeTiles;
 		
-		
-		for (int i = 0; i < targets.length; i++) {
-			result.targets[i] = targets[i].clone();
-		}
-		
+		result.targets = targets;
 		result.player = player.clone();
-		
+
+		for (int x = 0; x < boxmap.length; x++) {
+			result.boxmap[x] = boxmap[x].clone();
+		}
+
+		result.targetmap = targetmap;
+
 		return result;
 	}
 
@@ -231,21 +273,29 @@ public class Board {
 	 * @return true if the board is deadlocked
 	 */
 	public boolean isDeadlocked() {
-		// TODO implement deadlock detection, i.e. detection of hopeless situations
-		// Simple situations (i.e. no box can be moved) are handled by
-		// getPossibleMoves returning an empty list
+		Board workBoard = this.partialClone();
 		
-		// TODO map of "deadly" tiles (i.e. tiles where box there = game lost)
-		for (Pos box : boxes) {
-			if (targetmap[box.x][box.y]) continue; // if box is deadlocked on a target, it is fine
-			if ( ((!floor[box.x][box.y-1]) || (!floor[box.x][box.y+1])) &&
-					((!floor[box.x-1][box.y]) || (!floor[box.x+1][box.y])) ) {
-				return true;
-				// if both a horizontal and a vertical neighbour are walls,
-				// box is in a corner and cannot be moved
+		boolean hasRemoved = true;
+		while (hasRemoved) {
+			hasRemoved = false;
+			workBoard.calculateMaps();
+			for (Pos box : workBoard.boxes) {
+				if (box == null) break; // end of boxes
+				if (workBoard.canMove(box, 1) || workBoard.canMove(box, 2) ||
+						workBoard.canMove(box, 3) || workBoard.canMove(box, 4) ) {
+					// box can move -> remove it
+					hasRemoved = true;
+					workBoard.boxmap[box.x][box.y] = false;
+					//break; // break the for loop
+				}
 			}
 		}
 		
+		for (Pos box : workBoard.boxes) {
+			if (box == null) break; // end of boxes
+			if (!workBoard.targetmap[box.x][box.y]) // ignore boxes on targets
+				return true; // at least one box could not be moved after removing movable ones
+		}
 		
 		return false;
 	}
