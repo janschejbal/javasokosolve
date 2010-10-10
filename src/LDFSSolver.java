@@ -11,7 +11,8 @@ import java.util.List;
 public class LDFSSolver { // Limited depth first search
 	
 	private Board startBoard;
-	
+	private long expanded = 0;
+	long lastOutput = 0;
 	private HashMap<MiniState,WeakReference<MoveTree>> alreadySeen = new HashMap<MiniState,WeakReference<MoveTree>>();
 	
 	public LDFSSolver(Board startBoard) {
@@ -67,6 +68,20 @@ public class LDFSSolver { // Limited depth first search
 			if (otherSubtreeRef == null ) {
 				alreadySeen.put(ministate, new WeakReference<MoveTree>(subtree));
 				subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
+				
+				// TODO REMOVE DEBUGGING
+				expanded++;
+				if (false && (expanded % 10000) == 0) {
+					System.out.println();
+					System.out.println("Expanded: " + expanded);
+					System.out.println("Millis since last output: " + (System.currentTimeMillis()-lastOutput));
+					lastOutput = System.currentTimeMillis();
+					System.out.println(currentBoard.toString());
+					System.out.println();
+				}
+				
+				
+				
 			} else {
 				// we already had this state
 				
@@ -101,6 +116,8 @@ public class LDFSSolver { // Limited depth first search
 			}
 			
 		}
+		
+
 		
 		for (Iterator<MoveTree> iter = subtree.children.iterator(); iter.hasNext();) {
 			MoveTree child = iter.next();
