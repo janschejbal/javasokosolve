@@ -163,6 +163,19 @@ public class BoardLoader {
 	 * @throws RuntimeException if the server returns an unexpected answer.
 	 */
 	public static boolean checkSolution(int level, String solution) throws UnknownHostException, IOException {
+		String result = getServerReply(level, solution);
+        
+        if (result.startsWith("Good solution")) {
+        	return true;
+        } else if (result.startsWith("Wrong solution")) {
+        	return false;
+        } else {
+        	throw new RuntimeException("Unknown response to solution: " + result);
+        }
+	}
+
+	public static String getServerReply(int level, String solution)
+			throws UnknownHostException, IOException {
 		Socket socket = new Socket("cvap103.nada.kth.se",5555);
         InputStream inRaw = socket.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(inRaw));
@@ -180,16 +193,7 @@ public class BoardLoader {
         out.close();
         in.close();
         socket.close();
-
-        
-        if (result.startsWith("Good solution")) {
-        	return true;
-        } else if (result.startsWith("Wrong solution")) {
-        	return false;
-        } else {
-        	throw new RuntimeException("Unknown response to solution: " + result);
-        }
-        
+		return result;
 	}
 
 	private static String padBoard(String boardstring) {
