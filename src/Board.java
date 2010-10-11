@@ -57,9 +57,7 @@ public class Board {
 			}		
 		}
 
-		if (safeTiles == null) {
-			calcSafeTiles();
-		}
+
 			
 		boxes = new Pos[targets.length];
 		int storeBoxAt = 0;
@@ -72,6 +70,9 @@ public class Board {
 		}
 		assert(storeBoxAt == boxes.length);
 		
+		if (safeTiles == null) {
+			calcSafeTiles();
+		}
 
 		reachable = new boolean[floor.length][floor[0].length]; // auto-initializes to false
 		addReachable(player.x, player.y);
@@ -82,29 +83,32 @@ public class Board {
 	 */
 	private void calcSafeTiles() {
 		safeTiles = new boolean[floor.length][floor[0].length]; // auto-initializes to false
-		for (byte x = 0; x < floor.length; x++) {
-			for (byte y = 0; y < floor[0].length; y++) {
-				if (floor[x][y]) { // if its not floor, we cannot push anything there
-					if (targetmap[x][y]) {
-						safeTiles[x][y] = true;
-						continue;
-					}
-					try {
-						if ( ((!floor[x][y-1]) || (!floor[x][y+1])) &&
-								((!floor[x-1][y]) || (!floor[x+1][y])) ) {
-							// both a horizontal and a vertical neighbour are walls
-							continue; // --> corner -> not safe, leave at false
-						}
-					} catch (ArrayIndexOutOfBoundsException e) {
-						// on correct fields, tiles on the edge of the board
-						// are either walls or outside the reachable area.
-						continue;
-					}
-					
-					safeTiles[x][y] = true; // TODO better rules, fallback for now
-				}
-			}
+		List<Pos> newSafeTiles = new LinkedList<Pos>();
+		for (Pos target : targets) {
+			newSafeTiles.add(target); // targets are always safe
 		}
+		while (!newSafeTiles.isEmpty()) {
+			Pos currSafeTile = newSafeTiles.remove(0);
+			if (safeTiles[currSafeTile.x][currSafeTile.y]) continue; // do not revisit!
+			// actually, more work would be necessary to fully avoid that, but speed is not an issue
+			// as this is only run once per board
+			
+			safeTiles[currSafeTile.x][currSafeTile.y] = true;
+			//System.out.println("marked safe: " + currTile);
+
+			if (floor[currSafeTile.x-1][currSafeTile.y] && floor[currSafeTile.x-2][currSafeTile.y])
+				newSafeTiles.add(new Pos((byte)(currSafeTile.x-1),currSafeTile.y));
+			if (floor[currSafeTile.x+1][currSafeTile.y] && floor[currSafeTile.x+2][currSafeTile.y])
+				newSafeTiles.add(new Pos((byte)(currSafeTile.x+1),currSafeTile.y));
+			if (floor[currSafeTile.x][currSafeTile.y-1] && floor[currSafeTile.x][currSafeTile.y-2])
+				newSafeTiles.add(new Pos(currSafeTile.x,(byte)(currSafeTile.y-1)));
+			if (floor[currSafeTile.x][currSafeTile.y+1] && floor[currSafeTile.x][currSafeTile.y+2])
+				newSafeTiles.add(new Pos(currSafeTile.x,(byte)(currSafeTile.y+1)));
+		}
+		//System.out.println("Calculated safe tiles");
+		//System.out.println(this.toString());
+		//printMap(safeTiles, '*',' ');
+		
 	}
 
 	/**
@@ -116,17 +120,12 @@ public class Board {
 	 * @param y the y coordinate of the tile to check (and maybe add) as reachable
 	 */
 	private void addReachable(int x, int y) {
-		try { // DEBUG
-			if (!reachable[x][y] && floor[x][y] && !boxmap[x][y]) {
-				reachable[x][y] = true;
-				addReachable(x-1,y);
-				addReachable(x+1,y);
-				addReachable(x,y-1);
-				addReachable(x,y+1);
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-			throw new RuntimeException("addReachable ran off world. board probably not surrounded by walls.");
+		if (!reachable[x][y] && floor[x][y] && !boxmap[x][y]) {
+			reachable[x][y] = true;
+			addReachable(x-1,y);
+			addReachable(x+1,y);
+			addReachable(x,y-1);
+			addReachable(x,y+1);
 		}
 	}
 	
@@ -308,7 +307,7 @@ public class Board {
 	 */
 	public static void printMap(boolean[][] map, char fg, char bg) {
 		for (int y = 0; y < map[0].length; y++) {
-			for (int x = 0; x < map[0].length; x++) {
+			for (int x = 0; x < map.length; x++) {
 				System.out.print(map[x][y] ? fg : bg);
 			}
 			System.out.println();
