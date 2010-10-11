@@ -277,7 +277,7 @@ public class Board {
 		boolean hasRemoved = true;
 		while (hasRemoved) {
 			hasRemoved = false;
-			workBoard.calculateMaps();
+			workBoard.calculateMaps(); // this recalculates workBoard.boxes
 			for (Pos box : workBoard.boxes) {
 				if (box == null) break; // end of boxes
 				if (workBoard.canMove(box, 1) || workBoard.canMove(box, 2) ||
@@ -289,6 +289,9 @@ public class Board {
 				}
 			}
 		}
+		
+		// after the last box has been removed, the loop above is run again
+		// this makes sure that maps are calculated
 		
 		for (Pos box : workBoard.boxes) {
 			if (box == null) break; // end of boxes

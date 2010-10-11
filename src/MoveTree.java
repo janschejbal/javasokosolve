@@ -5,6 +5,8 @@ public class MoveTree {
 	public final Move move;
 	private MoveTree parent;
 	private int depth;
+	private Board board;
+	
 	public LinkedList<MoveTree> children;
 	
 	public boolean seen;
@@ -18,10 +20,19 @@ public class MoveTree {
 	 * @param move the move represented by this node
 	 * @param parent the parent node
 	 */
-	public MoveTree(Move move, MoveTree parent) {
+	private MoveTree(Move move, MoveTree parent) {
 		this.move = move;
 		this.parent = parent;
 		this.depth = parent == null ? 0 : parent.depth + 1;
+	}
+	
+	/**
+	 * Creates the root node of a move tree
+	 * @param startBoard the starting board
+	 */
+	public MoveTree(Board startBoard) {
+		this(null, null);
+		this.board = startBoard;
 	}
 	
 	public List<Move> getMoveChain() {
@@ -29,6 +40,14 @@ public class MoveTree {
 		List<Move> result = parent.getMoveChain();
 		result.add(move);
 		return result;
+	}
+	
+	public Board getBoard() {
+		if (board != null) return board;
+		
+		board = parent.getBoard().partialClone();
+		board.move(move.box, move.direction);
+		return board;
 	}
 	
 	public static LinkedList<MoveTree> wrapMoves(List<Move> moves, MoveTree parent) {

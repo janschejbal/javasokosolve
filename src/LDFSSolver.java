@@ -29,7 +29,7 @@ public class LDFSSolver { // Limited depth first search
 				// always use a fresh tree, always use fresh seen map!
 				alreadySeen = new HashSet<MiniState>();
 				System.gc();
-				solveStep(currentMaxDepth, new MoveTree(null, null)); 
+				solveStep(currentMaxDepth, new MoveTree(startBoard.partialClone())); 
 			}
 		} catch (SolutionFoundException e) {
 			return e.solution;
@@ -50,9 +50,7 @@ public class LDFSSolver { // Limited depth first search
 		
 		if (!subtree.seen) {
 			subtree.seen = true;
-			Board currentBoard = startBoard.partialClone();
-			currentBoard.move(subtree.getMoveChain());
-			
+			Board currentBoard = subtree.getBoard();
 			
 			currentBoard.calculateMaps();
 
