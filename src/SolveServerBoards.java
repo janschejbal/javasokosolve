@@ -49,7 +49,7 @@ public class SolveServerBoards {
 		String solutionString = player.findPath();
 
 		boolean result = BoardLoader.checkSolution(number, solutionString);
-		System.out.println(solutionString);
+		//System.out.println(solutionString);
 		System.out.print(result? "ok" : "WRONG");
 		
 		System.out.format(" (%.2f seconds = %.2f minutes)\n", neededTime/1000, neededTime/60000);

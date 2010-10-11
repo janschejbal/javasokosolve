@@ -1,6 +1,6 @@
+import java.rmi.NotBoundException;
 import java.util.LinkedList;
 import java.util.List;
-import java.rmi.NotBoundException;
 
 /**
  * A class to move the player around to push the boxes
