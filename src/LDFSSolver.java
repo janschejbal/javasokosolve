@@ -36,72 +36,59 @@ public class LDFSSolver { // Limited depth first search
 	}
 	
 	private void solveStep(int limit, MoveTree subtree) throws SolutionFoundException {
-		if (subtree.isFinished()) {
-			System.out.println("re-visited solved node. this should not happen");
-			return;
-		}
-		
 		if (subtree.getDepth() > limit) {
 			subtree.makeFinished();
 			return;
 		}
 		
-		if (!subtree.seen) {
-			subtree.seen = true;
-			Board currentBoard = subtree.getBoard();
-			
-			currentBoard.calculateMaps();
 
-			if (currentBoard.isSolved()) throw new SolutionFoundException(subtree.getMoveChain());
-			
-			if (currentBoard.isDeadlocked()) {
-				subtree.makeFinished();
-				return;
-			}
-			
-			MiniState ministate = new MiniState(currentBoard);
-			
-			
-			if (!alreadySeen.contains(ministate)) {
-				alreadySeen.add(ministate);
-				subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
-				
-				// TODO REMOVE DEBUGGING
-				expanded++;
-				/*
-				if ((expanded % 10000) == 0) {
-					System.out.println();
-					System.out.println("Expanded: " + expanded);
-					System.out.println("Millis since last output: " + (System.currentTimeMillis()-lastOutput));
-					lastOutput = System.currentTimeMillis();
-					System.out.println(currentBoard.toString());
-					System.out.println();
-				}
-				*/
-				
-				
-			} else {
-				// we already had this state
-					subtree.makeFinished();
-					return;
-			}
-			
+		Board currentBoard = subtree.getBoard();
+		
+		currentBoard.calculateMaps();
+
+		if (currentBoard.isSolved()) throw new SolutionFoundException(subtree.getMoveChain());
+		
+		if (currentBoard.isDeadlocked()) {
+			subtree.makeFinished();
+			return;
 		}
 		
+		MiniState ministate = new MiniState(currentBoard);
+		
+		
+		if (!alreadySeen.contains(ministate)) {
+			alreadySeen.add(ministate);
+			subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
+			
+			// TODO REMOVE DEBUGGING
+			expanded++;
+			/*
+			if ((expanded % 10000) == 0) {
+				System.out.println();
+				System.out.println("Expanded: " + expanded);
+				System.out.println("Millis since last output: " + (System.currentTimeMillis()-lastOutput));
+				lastOutput = System.currentTimeMillis();
+				System.out.println(currentBoard.toString());
+				System.out.println();
+			}
+			*/
+			
+			
+		} else {
+			// we already had this state
+				subtree.makeFinished();
+				return;
+		}
+	
 
 		
 		for (Iterator<MoveTree> iter = subtree.children.iterator(); iter.hasNext();) {
 			MoveTree child = iter.next();
 			solveStep(limit, child);
-			if (child.isFinished()) {
-				iter.remove();
-			}
 		}
 		
-		if (subtree.children.isEmpty()) {
-			subtree.makeFinished();
-			return;
-		}		
+		subtree.makeFinished();
+		return;
 		
 	}
 	

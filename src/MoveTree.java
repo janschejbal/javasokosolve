@@ -9,9 +9,9 @@ public class MoveTree {
 	
 	public LinkedList<MoveTree> children;
 	
-	public boolean seen;
+//	public boolean seen;
 	
-	private boolean finished;
+//	private boolean finished;
 	
 	public int intFlag;
 	
@@ -82,12 +82,8 @@ public class MoveTree {
 	}
 
 	public void makeFinished() {
-		finished = true;
 		children = null; // free memory!
 	}
 
-	public boolean isFinished() {
-		return finished;
-	}
 	 
 }
