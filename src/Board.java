@@ -64,12 +64,11 @@ public class Board {
 		for (byte x = 0; x < boxmap.length; x++) {
 			for (byte y = 0; y < boxmap[0].length; y++) {
 				if (boxmap[x][y]) {
-					System.out.println("[" + String.valueOf(x) + ", " + String.valueOf(y) + "]");
 					boxes[storeBoxAt++] = new Pos(x,y);
 				}
 			}
 		}
-		System.out.println("\n");
+		
 		assert(storeBoxAt == boxes.length);
 		
 		if (safeTiles == null) {
@@ -160,16 +159,23 @@ public class Board {
 		List<Move> result = new LinkedList<Move>();
 		for (int box = 0; box < boxes.length; box++) {
 			for (int dir = 1; dir < 5; dir++) {
-				System.out.println("move");
-				this.move(this.boxes[box], dir);
-				this.calculateMaps();
-				int dist = this.distanceSum();
-				System.out.println("move back");
-				this.move(this.boxes[box], ((dir + 1) % 4) + 1);
-				this.calculateMaps();
-				if ( canMove(boxes[box],dir) ) result.add(new Move(boxes[box],dir, dist));
+				if ( canMove(boxes[box],dir) ) {
+					//Calculate the distanceSum this move would generate
+					Board workingBoard = this.partialClone();
+					workingBoard.calculateMaps();
+					workingBoard.move(boxes[box], dir);
+					workingBoard.calculateMaps();
+					int dist = workingBoard.distanceSum();
+					workingBoard = null;
+					//add it to the list with the distance
+					result.add(new Move(boxes[box],dir,dist));
+				}
 			}
 		}
+		/**
+		 * This sorts the list so that the move with the lowest distanceSum comes first.
+		 * It uses a costume compare
+		 */
 		Collections.sort(result);
 		//Collections.shuffle(result);
 		return result;
