@@ -62,11 +62,13 @@ public class MoveTree {
 		return parent;
 	}
 	
+	@Deprecated
 	public void setParent(MoveTree parent) {
 		this.parent = parent;
 		fixDepth();
 	}
 	
+	@Deprecated
 	private void fixDepth() {
 		int newDepth = parent == null ? 0 : parent.depth + 1;
 		this.depth = newDepth;
