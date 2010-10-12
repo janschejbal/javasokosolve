@@ -3,22 +3,37 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A class to move the player around to push the boxes
+ * A class to move the player around to push the boxes.
+ * 
+ * It takes two arguments, a board to search and a list of moves for the
+ * boxes to solve the board. It then uses Dejikstras algorithmen to preform
+ * a graph search to find the shortest way from the player position to the
+ * pushing position for every push until the list of moves is empty, meaning
+ * that the board is solved.
+ *  
  * @author Calle
  *
  */
 public class PlayerMove {
+	/** The board in its initial state **/
 	private Board startBoard;
+	/**  A list with moves the boxes need to preform to solve the board **/
 	private List<Move> moveSequence;
+	/** The graph representing the walkable tiles on the board as vortexes **/
 	private Vortex[][] graph;
+	/** The queue of nodes to search thrue to find the path to the box being moved **/
 	private List<Vortex> nodequeue;
 
-	// Initialize the class by setting variables, then start the search for the path to take
+	/** Initialize the object *
+	 * @param startBoard the initial {@link #startBoard} that is being searched
+	 * @param moveSequnce the sequence of boxmoves to solve the {@link #startBoard}
+	 */
 	public PlayerMove(Board startBoard, List<Move> moveSequence) {
 		this.startBoard = startBoard;
 		this.moveSequence = moveSequence;
 	}
-
+	
+	/** Populates the nodequeue with vortexes to build a graph **/
 	public void createVortexes() {
 		this.nodequeue = new LinkedList<Vortex>();
 		for (int i = 0; i < this.startBoard.floor.length; i++) {
@@ -33,7 +48,11 @@ public class PlayerMove {
 		}
 		
 	}
-
+	/**
+	 * Starts the search in the graph and keeps track of the box movement list
+	 * 
+	 * @return a string containing the moves the player need to perform to push the boxes to the correct positions.
+	 */
 	public String findPath() {
 		String movements = "";
 		List<Move> dir = this.moveSequence;
@@ -49,14 +68,18 @@ public class PlayerMove {
 		return movements;
 	}
 
-	// I use the NotBoundException for now, even if it's not 100% correct, it still close enough
-	// in the name to be understood as the "There is no path to your goal"exception. -- aiquen
+	/**
+	 * Does the actual searching in the graph from the move given to the pushing tile
+	 * @param box the box and direction that we want to push
+	 * @return a string with the moves that the player needs to perform to get to the pushing tile, and then the push itself.
+	 * @throws NotBoundException the excpetion thrown if we somehow walks of the board, safeguard for broken boards.
+	 */
 	public String localPath(Move box) throws NotBoundException {
 		String steps = "";
 		
 		// To use Dijkstras we first build a matrix for the graph
 		this.graph = new Vortex[this.startBoard.floor.length][this.startBoard.floor[0].length];
-		//Create all vortexes in the matrix
+		//Make sure the maps are calculated, as it uses reachable map. Create all vortexes in the matrix
 		startBoard.calculateMaps();
 		this.createVortexes();
 		// Set the starting positions special values
@@ -104,7 +127,11 @@ public class PlayerMove {
 		}
 		return steps;
 	}
-			
+	
+	/**
+	 * calculates witch vortex has the least distance and returns that node
+	 * @return the node with the shortest distance 
+	 */
 	public Vortex leastDist() {
 		int dist = Integer.MAX_VALUE;
 		Vortex returnNode = null;
@@ -118,6 +145,11 @@ public class PlayerMove {
 		return returnNode;
 	}
 	
+	/**
+	 * converts the path of vortexes into string characters representing the moves the player should make
+	 * @param node the Vortex representing the tile and moving direction from that tile
+	 * @return a string representing the move the player makes from the tile to another
+	 */
 	public String getPath(Vortex node) {
 		if (node.isRoot) return "";
 		
@@ -133,6 +165,11 @@ public class PlayerMove {
 		return getPath(node.parent)+code;
 	}
 	
+	/**
+	 * Updates the distance traveled to reach a node if the distance is shorter then the already known distance. And if so, sets a new parent node to keep track of the way to the node.
+	 * @param node the Vortex being updated should the distance be shorter
+	 * @param parent the parent node, in this case, the node we arrived from
+	 */
 	public void updateDist(Vortex node, Vortex parent) {
 		if (node == null) return; // nothing to do here
 		int alt = node.dist + 1;
