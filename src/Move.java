@@ -5,12 +5,15 @@
  * A class representing information about a move
  * @author Jan
  */
-public class Move {
+public class Move implements Comparable<Move> {
 	/** the number of the box that is moved */
 	public final Pos box;
 	
 	/** the direction in which the box is moved (1: up, 2: right, 3: down, 4: left) */
 	public final int direction;
+	
+	/** the new sum of distances between boxes and their closest targets if move is performed */
+	public int distancSum;
 
 	/**
 	 * @param box the number of the box that is moved 
@@ -19,6 +22,37 @@ public class Move {
 	public Move(Pos box, int direction) {
 		this.box = box;
 		this.direction = direction;
+	}
+	
+	/**
+	 * 
+	 * @param box the number of the box that is moved 
+	 * @param direction direction the direction in which the box is moved (1: up, 2: right, 3: down, 4: left)
+	 * @param dist sum of distances between boxes and targets for this move
+	 */
+	public Move(Pos box, int direction, int dist) {
+		this.box = box;
+		this.direction = direction;
+		this.distancSum = dist;
+	}
+	
+	public int getDist() {
+		return distancSum;
+	}
+	
+	public void setDist(int dist) {
+		this.distancSum = dist;
+	}
+	
+	public int compareTo(Move other) {
+		if (this.distancSum < other.distancSum) {
+			return -1;
+		}
+		else if (this.distancSum == other.distancSum) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 	
 	@Override

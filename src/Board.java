@@ -1,4 +1,5 @@
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,10 +64,12 @@ public class Board {
 		for (byte x = 0; x < boxmap.length; x++) {
 			for (byte y = 0; y < boxmap[0].length; y++) {
 				if (boxmap[x][y]) {
+					System.out.println("[" + String.valueOf(x) + ", " + String.valueOf(y) + "]");
 					boxes[storeBoxAt++] = new Pos(x,y);
 				}
 			}
 		}
+		System.out.println("\n");
 		assert(storeBoxAt == boxes.length);
 		
 		if (safeTiles == null) {
@@ -157,9 +160,17 @@ public class Board {
 		List<Move> result = new LinkedList<Move>();
 		for (int box = 0; box < boxes.length; box++) {
 			for (int dir = 1; dir < 5; dir++) {
-				if ( canMove(boxes[box],dir) ) result.add(new Move(boxes[box],dir));
+				System.out.println("move");
+				this.move(this.boxes[box], dir);
+				this.calculateMaps();
+				int dist = this.distanceSum();
+				System.out.println("move back");
+				this.move(this.boxes[box], ((dir + 1) % 4) + 1);
+				this.calculateMaps();
+				if ( canMove(boxes[box],dir) ) result.add(new Move(boxes[box],dir, dist));
 			}
 		}
+		Collections.sort(result);
 		//Collections.shuffle(result);
 		return result;
 	}
@@ -243,7 +254,7 @@ public class Board {
 	 */
 	public int distanceSum() {
 		int result = 0;
-		for (Pos box : boxes) {
+		for (Pos box : this.boxes) {
 			int mindist = Integer.MAX_VALUE;
 			for (Pos target : targets) {
 				int dist = box.distance(target);
