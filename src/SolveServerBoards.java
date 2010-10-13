@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SolveServerBoards {
 	
-	private static final int TIMEOUT = 30000;
+	private static final int TIMEOUT = 60000;
 	
 	/**
 	 * @param args
