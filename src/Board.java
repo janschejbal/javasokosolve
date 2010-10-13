@@ -41,6 +41,14 @@ public class Board {
 	/** caches the distance sum once calculated,  see {@link #distanceSum()}*/
 	private Integer distsum = null;
 	
+	/** caches the simple distance sum once calculated,  see {@link #simpleDistanceSum()}*/
+	private Integer simpleDistSum = null;
+
+	
+	/** A array of maps - each map stores the shortest-path distances to a specific target.
+	 * Walls are taken into account! */
+	private int[][][] distanceMaps = null;
+	
 	public Board(int width, int height, int boxCount) {
 		if (width > 125 || height > 125 || boxCount > 125) throw new RuntimeException("Too large board or too many boxes");
 		
@@ -60,6 +68,10 @@ public class Board {
 			}		
 		}
 
+		if (distanceMaps == null) {
+			calcDistanceMaps();
+		}
+		
 		calcBoxMap();
 		
 		if (safeTiles == null) {
@@ -68,6 +80,61 @@ public class Board {
 
 		reachable = new boolean[floor.length][floor[0].length]; // auto-initializes to false
 		addReachable(player.x, player.y);
+	}
+	
+	/** Calculates the distance maps for all targets */
+	private void calcDistanceMaps() {
+		distanceMaps = new int[targets.length][][];
+		for (int i = 0; i< targets.length; i++) {
+			distanceMaps[i] = calcDistanceMap(i);
+		}
+	}
+	
+	/**
+	 * Calculates the distance map for a specific target using BFS
+	 * @param targetNumber the number of the target for which the map should be created
+	 */
+	private int[][] calcDistanceMap(int targetNumber) {
+		int[][] distmap = new int[floor.length][floor[0].length];
+		LinkedList<Pos> toExpand = new LinkedList<Pos>();
+		
+		// initialize
+		for (int x = 0; x < distmap.length; x++) {
+			for (int y = 0; y < distmap[0].length; y++) {
+				distmap[x][y] = Integer.MAX_VALUE;
+			}
+		}
+		
+		toExpand.add(targets[targetNumber]);
+		distmap[targets[targetNumber].x][targets[targetNumber].y] = 0;
+		
+		while (!toExpand.isEmpty()) {
+			Pos curr = toExpand.pop();
+			int nextDist = distmap[curr.x][curr.y]+1;
+
+			// handle neighbors
+			if (floor[curr.x-1][curr.y] && distmap[curr.x-1][curr.y] == Integer.MAX_VALUE) {
+				distmap[curr.x-1][curr.y] = nextDist;
+				toExpand.add(new Pos((byte)(curr.x-1),curr.y));
+			}
+			if (floor[curr.x+1][curr.y] && distmap[curr.x+1][curr.y] == Integer.MAX_VALUE) {
+				distmap[curr.x+1][curr.y] = nextDist;
+				toExpand.add(new Pos((byte)(curr.x+1),curr.y));
+			}
+			if (floor[curr.x][curr.y-1] && distmap[curr.x][curr.y-1] == Integer.MAX_VALUE) {
+				distmap[curr.x][curr.y-1] = nextDist;
+				toExpand.add(new Pos(curr.x,(byte)(curr.y-1)));
+			}
+			if (floor[curr.x][curr.y+1] && distmap[curr.x][curr.y+1] == Integer.MAX_VALUE) {
+				distmap[curr.x][curr.y+1] = nextDist;
+				toExpand.add(new Pos(curr.x,(byte)(curr.y+1)));
+			}
+		}
+		
+		//System.out.println("Distance map for target " + targetNumber);
+		//printMap(distmap);
+		
+		return distmap;
 	}
 
 	private void calcBoxMap() {
@@ -214,7 +281,7 @@ public class Board {
 		// maps are invalid now, discard
 		reachable = null;
 		boxes = null;
-		distsum = null;
+		simpleDistSum = null;
 	}
 	
 	/**
@@ -254,16 +321,17 @@ public class Board {
 		}
 
 		result.targetmap = targetmap;
-
+		result.distanceMaps = distanceMaps;
+		
 		return result;
 	}
 
 	/**
 	 * @return The sum of the ("city-block") distances between each box and the nearest target.
-	 * Does require the box map and target map, but not the reachable map
+	 * Does require the box and target lists, but not the reachable map
 	 */
-	public int distanceSum() {
-		if (distsum != null ) return distsum;
+	public int simpleDistanceSum() {
+		if (simpleDistSum != null ) return simpleDistSum;
 		int distsum = 0;
 		for (Pos box : this.boxes) {
 			int mindist = Integer.MAX_VALUE;
@@ -279,12 +347,33 @@ public class Board {
 	}
 	
 	/**
+	 * @return The sum of the shortest-path distances between each box and the nearest target (2x) and all targets.
+	 * Does require the box and target lists and the distance map, but not the reachable map
+	 */
+	public int distanceSum() {
+		if (distsum != null ) return distsum;
+		int distsum = 0;
+		for (Pos box : this.boxes) {
+			int mindist = Integer.MAX_VALUE;
+			for (int targetNumber = 0; targetNumber < targets.length; targetNumber++) {
+				int dist = distanceMaps[targetNumber][box.x][box.y];
+				if (dist < mindist) {
+					mindist = dist;
+				}
+				distsum += dist;
+			}
+			distsum += 2 * mindist;
+		}
+		return distsum;
+	}
+	
+	/**
 	 * Checks if the board is solved. Assumes that board is valid, i.e. no invalid moves have been made!
 	 * Requires maps until distanceSum is fixed.
 	 * @return true if the board is solved
 	 */
 	public boolean isSolved() {
-		return distanceSum() == 0;
+		return simpleDistanceSum() == 0;
 	}
 		
 	/**
@@ -324,7 +413,7 @@ public class Board {
 	}
 
 	/**
-	 * Helper function for debugging. Prints a map.
+	 * Helper function for debugging. Prints a boolean map.
 	 * @param map The map to be printed
 	 * @param fg The character to be used for foreground (true) tiles.
 	 * @param bg The character to be used for background (false) tiles.
@@ -333,6 +422,23 @@ public class Board {
 		for (int y = 0; y < map[0].length; y++) {
 			for (int x = 0; x < map.length; x++) {
 				System.out.print(map[x][y] ? fg : bg);
+			}
+			System.out.println();
+		}		
+	}
+	
+	/**
+	 * Helper function for debugging. Prints a integer map.
+	 * @param map The map to be printed
+	 */
+	public static void printMap(int[][] map) {
+		for (int y = 0; y < map[0].length; y++) {
+			for (int x = 0; x < map.length; x++) {
+				if (map[x][y] == Integer.MAX_VALUE) {
+					System.out.print("   ");
+				} else {
+					System.out.print(map[x][y] > 99 ? "## " : String.format("%2d ", map[x][y]));
+				}
 			}
 			System.out.println();
 		}		
