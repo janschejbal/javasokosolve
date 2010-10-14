@@ -236,7 +236,7 @@ public class Board {
 					Board workingBoard = this.partialClone();
 					workingBoard.move(boxes[box], dir);
 					workingBoard.calcBoxMap();
-					int dist = workingBoard.distanceSum();
+					int dist = workingBoard.distanceSumHungarian();
 					//add it to the list with the distance
 					result.add(new Move(boxes[box],dir,dist));
 				}
@@ -350,6 +350,7 @@ public class Board {
 	 * @return The sum of the shortest-path distances between each box and the nearest target (2x) and all targets.
 	 * Does require the box and target lists and the distance map, but not the reachable map
 	 */
+	@Deprecated
 	public int distanceSum() {
 		if (distsum != null ) return distsum;
 		int distsum = 0;
@@ -365,6 +366,17 @@ public class Board {
 			distsum += 2 * mindist;
 		}
 		return distsum;
+	}
+	
+	public int distanceSumHungarian() {
+		int[][] matrix = new int[boxes.length][targets.length];
+		for (int boxnr = 0; boxnr < boxes.length; boxnr++) {
+			for (int targetnr = 0; targetnr < targets.length; targetnr++) {
+				matrix[boxnr][targetnr] = distanceMaps[targetnr][boxes[boxnr].x][boxes[boxnr].y];
+			}
+		}
+		
+		return HungarianAlgorithm.minCost(matrix);
 	}
 	
 	/**

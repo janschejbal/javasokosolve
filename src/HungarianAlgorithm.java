@@ -91,7 +91,7 @@ public class HungarianAlgorithm {
 	 * @return true if at least one row is assigned
 	 */
 	private boolean assignStepAssignSingles() {
-		System.out.println("doing single assign");
+		//System.out.println("doing single assign");
 		boolean couldAssign = false;
 		for (int row = 0; row < matrix.length; row++) {
 			if (rowAssignment[row] != -1) continue; // already assigned
@@ -121,14 +121,14 @@ public class HungarianAlgorithm {
 	}
 
 	private void setAssignment(int row, int col) {
-		System.out.println("assigned " +row + " to "+ col);
+		//System.out.println("assigned " +row + " to "+ col);
 		rowAssignment[row] = col;
 		colAssignment[col] = row;
 		assignedCount++;
 	}
 
 	private boolean assignStepAssignAny() {
-		System.out.println("doing any assign");
+		//System.out.println("doing any assign");
 		for (int row = 0; row < matrix.length; row++) {
 			if (rowAssignment[row] != -1) continue; // already assigned
 			
@@ -148,8 +148,8 @@ public class HungarianAlgorithm {
 	private boolean[] markedCols;
 
 	private void doRowMarkingStep() {
-		System.out.println("Doing row marking step");
-		printMatrix(matrix);
+		//System.out.println("Doing row marking step");
+		//printMatrix(matrix);
 		
 		markedRows = new boolean[matrix.length];
 		markedCols = new boolean[matrix[0].length];
@@ -203,26 +203,26 @@ public class HungarianAlgorithm {
 	private int calculateMinCost() {
 		while (true) { // repeat until solution found
 			// Step 1
-			printMatrix(matrix);
-			System.out.println("step1");
+			//printMatrix(matrix);
+			//System.out.println("step1");
 
 			subtractRows();
 			if (assign()) return findSolution();
 	
 			// Step 2
-			printMatrix(matrix);
-			System.out.println("step2");
+			//printMatrix(matrix);
+			//System.out.println("step2");
 			resetAssignments();
 			subtractCols();
 			if (assign()) return findSolution();
 	
-			printMatrix(matrix);
+			//printMatrix(matrix);
 			// Step 3+4 (initial assignments are already done)
 			doRowMarkingStep();
 			resetAssignments();
 			if (assign()) return findSolution();
 			resetAssignments();
-			System.out.println("-----------nextloop-------------");
+			//System.out.println("-----------nextloop-------------");
 		}
 	}
 
