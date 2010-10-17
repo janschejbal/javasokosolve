@@ -1,5 +1,8 @@
 Usage
 Use a current Java VM (for example Version 6 Update 22).
+
+If the compiler complains about "pop()" your Java is too old.
+
 To run, compile with "javac Solve.java" and run with "java Solve 1"
 (replace 1 with the board number to solve).
 
