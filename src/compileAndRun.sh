@@ -1,2 +1,2 @@
 # tested on my.nada.kth.se
-javac MidtermMilestoneDemo.java && java MidtermMilestoneDemo
+javac Solve.java && java Solve 1
