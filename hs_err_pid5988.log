@@ -1,0 +1,135 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (sharedRuntime.cpp:486), pid=5988, tid=6896
+#  Error: guarantee(false,"missing exception handler")
+#
+# JRE version: 6.0_20-b02
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (16.3-b01 mixed mode windows-amd64 )
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000004c516800):  JavaThread "Thread-89" [_thread_in_vm, id=6896, stack(0x000000004c1f0000,0x000000004c2f0000)]
+
+Stack: [0x000000004c1f0000,0x000000004c2f0000]
+[error occurred during error reporting (printing stack bounds), id 0xc0000005]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+v  ~ExceptionBlob
+J  Board.partialClone()LBoard;
+J  LDFSSolver.solveStep(ILMoveTree;)V
+j  LDFSSolver.solveStep(ILMoveTree;)V+186
+j  LDFSSolver.solveStep(ILMoveTree;)V+186
+j  LDFSSolver.solveStep(ILMoveTree;)V+186
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+J  LDFSSolver.solveStep(ILMoveTree;)V
+j  LDFSSolver.solve(II)Ljava/util/List;+34
+j  SolverThread.run()V+18
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+=>0x000000004c516800 JavaThread "Thread-89" [_thread_in_vm, id=6896, stack(0x000000004c1f0000,0x000000004c2f0000)]
+  0x000000004b48f800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=2108, stack(0x000000004ba30000,0x000000004bb30000)]
+  0x000000004b47d800 JavaThread "CompilerThread1" daemon [_thread_blocked, id=5756, stack(0x000000004b930000,0x000000004ba30000)]
+  0x000000004b479800 JavaThread "CompilerThread0" daemon [_thread_blocked, id=2356, stack(0x000000004b830000,0x000000004b930000)]
+  0x00000000002cf800 JavaThread "Attach Listener" daemon [_thread_blocked, id=1464, stack(0x000000004b730000,0x000000004b830000)]
+  0x000000004b470800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=3024, stack(0x000000004b630000,0x000000004b730000)]
+  0x00000000002b3800 JavaThread "Finalizer" daemon [_thread_blocked, id=5016, stack(0x000000004b330000,0x000000004b430000)]
+  0x00000000002b1800 JavaThread "Reference Handler" daemon [_thread_blocked, id=1412, stack(0x000000004b230000,0x000000004b330000)]
+  0x00000000003bb000 JavaThread "main" [_thread_blocked, id=5576, stack(0x0000000002160000,0x0000000002260000)]
+
+Other Threads:
+  0x00000000002ab800 VMThread [stack: 0x000000004b130000,0x000000004b230000] [id=5508]
+  0x000000004b491800 WatcherThread [stack: 0x000000004bb30000,0x000000004bc30000] [id=3356]
+
+VM state:synchronizing (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00000000003b91c0] Threads_lock - owner thread: 0x00000000002ab800
+[0x00000000003b96c0] Heap_lock - owner thread: 0x00000000003bb000
+
+Heap
+ PSYoungGen      total 332800K, used 8697K [0x0000000035110000, 0x000000004a640000, 0x000000004a660000)
+  eden space 317248K, 2% used [0x0000000035110000,0x000000003574e508,0x00000000486e0000)
+  from space 15552K, 14% used [0x00000000486e0000,0x0000000048920000,0x0000000049610000)
+  to   space 15104K, 0% used [0x0000000049780000,0x0000000049780000,0x000000004a640000)
+ PSOldGen        total 416832K, used 116788K [0x000000000a660000, 0x0000000023d70000, 0x0000000035110000)
+  object space 416832K, 28% used [0x000000000a660000,0x000000001186d250,0x0000000023d70000)
+ PSPermGen       total 21248K, used 3746K [0x0000000005260000, 0x0000000006720000, 0x000000000a660000)
+  object space 21248K, 17% used [0x0000000005260000,0x0000000005608990,0x0000000006720000)
+
+Dynamic libraries:
+0x0000000000400000 - 0x000000000042e000 	C:\Program Files\Java\jre6\bin\javaw.exe
+0x00000000770c0000 - 0x000000007726b000 	C:\Windows\SYSTEM32\ntdll.dll
+0x0000000076ea0000 - 0x0000000076fbf000 	C:\Windows\system32\kernel32.dll
+0x000007fefd380000 - 0x000007fefd3eb000 	C:\Windows\system32\KERNELBASE.dll
+0x000007fefdfa0000 - 0x000007fefe07b000 	C:\Windows\system32\ADVAPI32.dll
+0x000007fefd940000 - 0x000007fefd9df000 	C:\Windows\system32\msvcrt.dll
+0x000007fefdd20000 - 0x000007fefdd3f000 	C:\Windows\SYSTEM32\sechost.dll
+0x000007fefef40000 - 0x000007feff06e000 	C:\Windows\system32\RPCRT4.dll
+0x0000000076fc0000 - 0x00000000770ba000 	C:\Windows\system32\USER32.dll
+0x000007feff1f0000 - 0x000007feff257000 	C:\Windows\system32\GDI32.dll
+0x000007fefd890000 - 0x000007fefd89e000 	C:\Windows\system32\LPK.dll
+0x000007feff260000 - 0x000007feff32a000 	C:\Windows\system32\USP10.dll
+0x000007feff350000 - 0x000007feff37e000 	C:\Windows\system32\IMM32.DLL
+0x000007fefd3f0000 - 0x000007fefd4f9000 	C:\Windows\system32\MSCTF.dll
+0x000000006d7f0000 - 0x000000006de95000 	C:\Program Files\Java\jre6\bin\server\jvm.dll
+0x000007fefadd0000 - 0x000007fefae0b000 	C:\Windows\system32\WINMM.dll
+0x000000006d760000 - 0x000000006d76e000 	C:\Program Files\Java\jre6\bin\verify.dll
+0x000000006d3b0000 - 0x000000006d3d7000 	C:\Program Files\Java\jre6\bin\java.dll
+0x000000006d310000 - 0x000000006d31a000 	C:\Program Files\Java\jre6\bin\hpi.dll
+0x0000000077280000 - 0x0000000077287000 	C:\Windows\system32\PSAPI.DLL
+0x000000006d7b0000 - 0x000000006d7c2000 	C:\Program Files\Java\jre6\bin\zip.dll
+0x000000006d600000 - 0x000000006d617000 	C:\Program Files\Java\jre6\bin\net.dll
+0x000007feff380000 - 0x000007feff3cd000 	C:\Windows\system32\WS2_32.dll
+0x000007fefdb30000 - 0x000007fefdb38000 	C:\Windows\system32\NSI.dll
+0x000007fefc850000 - 0x000007fefc8a4000 	C:\Windows\system32\mswsock.dll
+0x000007fefc840000 - 0x000007fefc847000 	C:\Windows\System32\wship6.dll
+0x000007fefc240000 - 0x000007fefc247000 	C:\Windows\System32\wshtcpip.dll
+0x000007fefc6d0000 - 0x000007fefc72b000 	C:\Windows\system32\DNSAPI.dll
+0x0000000073350000 - 0x0000000073385000 	C:\Program Files\Bonjour\mdnsNSP.dll
+0x000007fefa710000 - 0x000007fefa737000 	C:\Windows\system32\Iphlpapi.DLL
+0x000007fefa6f0000 - 0x000007fefa6fb000 	C:\Windows\system32\WINNSI.DLL
+0x000007fef9e60000 - 0x000007fef9e68000 	C:\Windows\system32\rasadhlp.dll
+0x000007fefa5a0000 - 0x000007fefa5f3000 	C:\Windows\System32\fwpuclnt.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1252 
+java_command: SolveServerBoards
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jre6
+CLASSPATH=.;C:\Program Files (x86)\Java\jre6\lib\ext\QTJava.zip
+PATH=C:\csvn\bin\;C:\csvn\Python25\;c:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\QuickTime\QTSystem\
+USERNAME=Johan
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=AMD64 Family 16 Model 4 Stepping 2, AuthenticAMD
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7600 
+
+CPU:total 3 (3 cores per cpu, 1 threads per core) family 16 model 4 stepping 2, cmov, cx8, fxsr, mmx, sse, sse2, sse3, popcnt, mmxext, 3dnow, 3dnowext, lzcnt, sse4a
+
+Memory: 4k page, physical 4193460k(922044k free), swap 8385020k(3775080k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (16.3-b01) for windows-amd64 JRE (1.6.0_20-b02), built on Apr 12 2010 13:44:19 by "java_re" with MS VC++ 8.0 (VS2005)
+
+time: Sun Sep 26 03:50:41 2010
+elapsed time: 2109 seconds
+
