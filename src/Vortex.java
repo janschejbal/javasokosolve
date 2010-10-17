@@ -7,7 +7,6 @@
  * It also keep track of what node we arrived from to this node.
  * Since we start somewhere, every node also knows if it is the root node or not.
  * And last, it keep tracks of the coordinates on the board.
- * @author aiquen
  *
  */
 public class Vortex {

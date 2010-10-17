@@ -3,7 +3,6 @@
 
 /**
  * A class for storing positions (x/y coordinate pairs)
- * @author Jan
  */
 public class Pos implements Cloneable {
 	public byte x;

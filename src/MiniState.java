@@ -11,7 +11,6 @@ import java.util.Arrays;
  * 	a) the boxes are at the same position and
  *  b) the player can reach the same area.
  * To save memory, a compact format is used.
- * @author Jan
  *
  */
 public class MiniState {
@@ -29,18 +28,7 @@ public class MiniState {
 		for (Pos box : source.boxes) {
 			this.data[storeAt++] = (byte)box.x;
 			this.data[storeAt++] = (byte)box.y;
-		}
-		
-		// boxes should be stored in sorted order, but moves are messed up then!
-		/*for (int x = 0; x < source.boxmap.length; x++) {
-			for (int y = 0; y < source.boxmap[0].length; y++) {
-				if (source.boxmap[x][y]) {
-					this.data[storeAt++] = (byte)x;
-					this.data[storeAt++] = (byte)y;
-				}
-			}
-		}*/
-		
+		}		
 		
 		// save only the first reachable position. should be enough (together with the boxes!)
 		for (int x = 0; x < source.reachable.length; x++) {

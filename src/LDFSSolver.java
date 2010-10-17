@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * A solver based on a limited/iterative depth first search
- * @author Jan
  *
  */
 public class LDFSSolver { // Limited depth first search
@@ -61,16 +60,7 @@ public class LDFSSolver { // Limited depth first search
 			subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
 			
 			expanded++;
-			/*
-			if ((expanded % 10000) == 0) {
-				System.out.println();
-				System.out.println("Expanded: " + expanded);
-				System.out.println("Millis since last output: " + (System.currentTimeMillis()-lastOutput));
-				lastOutput = System.currentTimeMillis();
-				System.out.println(currentBoard.toString());
-				System.out.println();
-			}
-			*/
+			
 			
 			
 		} else {

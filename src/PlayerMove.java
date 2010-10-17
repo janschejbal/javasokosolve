@@ -10,8 +10,6 @@ import java.util.List;
  * a graph search to find the shortest way from the player position to the
  * pushing position for every push until the list of moves is empty, meaning
  * that the board is solved.
- *  
- * @author Calle
  *
  */
 public class PlayerMove {

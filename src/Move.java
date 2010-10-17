@@ -3,7 +3,6 @@
 
 /**
  * A class representing information about a move
- * @author Jan
  */
 public class Move implements Comparable<Move> {
 	/** the number of the box that is moved */

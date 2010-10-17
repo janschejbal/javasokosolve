@@ -9,7 +9,6 @@ import java.util.List;
  * 
  * (deprecated, use adapted solveServerBoards instead)
  * 
- * @author aiquen
  *
  */
 @Deprecated
