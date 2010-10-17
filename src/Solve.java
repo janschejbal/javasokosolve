@@ -1,5 +1,3 @@
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /** default entry point */
@@ -15,7 +13,7 @@ public class Solve {
 		Board b = BoardLoader.loadFromServer(boardNumber);
 		
 		LDFSSolver solver = new LDFSSolver(b);
-		List<Move> solution = solver.solve(100000, 400);
+		List<Move> solution = solver.solve(100000, 500);
 		
 		PlayerMove playerMover = new PlayerMove(b, solution);
 		System.out.println(BoardLoader.getServerReply(boardNumber, playerMover.findPath()));

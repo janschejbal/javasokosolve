@@ -60,7 +60,6 @@ public class LDFSSolver { // Limited depth first search
 			alreadySeen.add(ministate);
 			subtree.children = MoveTree.wrapMoves(currentBoard.getPossibleMoves(), subtree);
 			
-			// TODO REMOVE DEBUGGING
 			expanded++;
 			/*
 			if ((expanded % 10000) == 0) {

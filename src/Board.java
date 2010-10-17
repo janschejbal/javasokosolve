@@ -247,7 +247,6 @@ public class Board {
 		 * It uses a costume compare
 		 */
 		Collections.sort(result);
-		//Collections.shuffle(result);
 		return result;
 	}
 	

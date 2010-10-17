@@ -18,7 +18,7 @@ public class SolverThread extends Thread {
 	@Override
 	public void run() {
 		LDFSSolver solver = new LDFSSolver(board);
-		List<Move> tmpSolution = solver.solve(3000, 400);
+		List<Move> tmpSolution = solver.solve(5000, 750);
 		solution = tmpSolution;
 		isFinished = true;
 		synchronized (waitingObject) {
