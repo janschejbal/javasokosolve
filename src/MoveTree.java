@@ -1,6 +1,9 @@
 import java.util.LinkedList;
 import java.util.List;
 
+/** a element (node) of the move tree.
+ * each node represents one movement of a box
+ *  */
 public class MoveTree {
 	public final Move move;
 	private MoveTree parent;

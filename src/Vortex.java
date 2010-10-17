@@ -1,4 +1,6 @@
 /**
+ * Data structure for PlayerMove.
+ * 
  * A class representing a node in the graph.
  * 
  * The Vortex keep track of the distanse from the start to the Vortex.

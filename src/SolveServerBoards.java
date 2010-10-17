@@ -11,13 +11,20 @@ public class SolveServerBoards {
 	 * @param args
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {		
-		for (int i = 1; i<1000; i++) {
-			testBoard(i);
+		int solved = 0;
+		long beginTime = (new Date()).getTime();
+		System.out.println("Solving...");
+		for (int i = 1; i<=130; i++) {
+			if (testBoard(i)) solved++;
 			System.gc();
 		}
+		double neededTime = (new Date()).getTime() - beginTime;
+		System.out.println("Solved percentage: " + String.valueOf(solved/1.3) + "%");
+		System.out.println("Time: " + String.valueOf(neededTime / 60000));
 	}
 	
-	private static void testBoard(int number) throws IOException, InterruptedException {
+	@SuppressWarnings("deprecation")
+	private static boolean testBoard(int number) throws IOException, InterruptedException {
 		Board b = BoardLoader.loadFromServer(number);
 		System.out.format("Solving board number %3d... ", number);
 				
@@ -34,7 +41,7 @@ public class SolveServerBoards {
 			if (elapsedTime > TIMEOUT) {
 				thread.stop();
 				System.out.format("TIMEOUT (%.2f seconds = %.2f minutes)\n", elapsedTime/1000, elapsedTime/60000);
-				return;				
+				return false;				
 			}
 		}
 		double neededTime = (new Date()).getTime() - startTime;
@@ -42,7 +49,7 @@ public class SolveServerBoards {
 		List<Move> solution = thread.solution;
 		if (solution == null) {
 			System.out.format(" NO SOLUTION FOUND (%.2f seconds = %.2f minutes)\n", neededTime/1000, neededTime/60000);
-			return;
+			throw new RuntimeException("considered board unsolvable!");		
 		}
 		
 		PlayerMove player = new PlayerMove(b, solution);
@@ -52,7 +59,10 @@ public class SolveServerBoards {
 		//System.out.println(solutionString);
 		System.out.print(result? "ok" : "WRONG");
 		
+		if (!result) throw new RuntimeException("wrong solution!");		
+
 		System.out.format(" (%.2f seconds = %.2f minutes)\n", neededTime/1000, neededTime/60000);
+		return true;
 	}
 
 }

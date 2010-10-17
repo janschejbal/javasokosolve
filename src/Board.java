@@ -236,7 +236,7 @@ public class Board {
 					Board workingBoard = this.partialClone();
 					workingBoard.move(boxes[box], dir);
 					workingBoard.calcBoxMap();
-					int dist = workingBoard.distanceSumHungarian();
+					int dist = workingBoard.distanceSumReal();
 					//add it to the list with the distance
 					result.add(new Move(boxes[box],dir,dist));
 				}
@@ -347,11 +347,10 @@ public class Board {
 	}
 	
 	/**
-	 * @return The sum of the shortest-path distances between each box and the nearest target (2x) and all targets.
+	 * @return The sum of the shortest-path distances between each box and the nearest target (weighted 3x) and all targets.
 	 * Does require the box and target lists and the distance map, but not the reachable map
 	 */
-	@Deprecated
-	public int distanceSum() {
+	public int distanceSumRealWeighted() {
 		if (distsum != null ) return distsum;
 		int distsum = 0;
 		for (Pos box : this.boxes) {
@@ -363,11 +362,65 @@ public class Board {
 				}
 				distsum += dist;
 			}
-			distsum += 2 * mindist;
+			distsum += 3 * mindist;
 		}
 		return distsum;
 	}
 	
+	/**
+	 * @return The sum of the shortest-path distances between each box and the nearest target
+	 * Does require the box and target lists and the distance map, but not the reachable map
+	 */
+	public int distanceSumReal() {
+		if (distsum != null ) return distsum;
+		int distsum = 0;
+		for (Pos box : this.boxes) {
+			int mindist = Integer.MAX_VALUE;
+			for (int targetNumber = 0; targetNumber < targets.length; targetNumber++) {
+				int dist = distanceMaps[targetNumber][box.x][box.y];
+				if (dist < mindist) {
+					mindist = dist;
+				}
+			}
+			distsum += mindist;
+		}
+		return distsum;
+	}
+	
+	/**
+	 * uses a simple method to assign boxes to targets (each target grabs the nearest still not grabbed box)
+	 * then calculates the sum of distances
+	 * @return
+	 */
+	public int distanceSumSimpleAssign() {
+		if (distsum != null) return distsum;
+		int distsum = 0;
+		
+		List<Pos> remainingBoxes = new LinkedList<Pos>();
+		for (Pos box : boxes) remainingBoxes.add(box);
+		
+		for (int targetNumber = 0; targetNumber < targets.length; targetNumber++) {
+			int bestindex = -1;
+			int bestvalue = Integer.MAX_VALUE;
+			int index = 0;
+			for (Pos box : remainingBoxes) { // find nearest box
+				int dist = distanceMaps[targetNumber][box.x][box.y];
+				if (dist < bestvalue) {
+					bestvalue = dist;
+					bestindex = index;
+				}
+				index++;
+			}
+			remainingBoxes.remove(bestindex);
+			distsum += bestvalue;
+		}
+
+		return distsum;
+	}
+	
+	/** Calculates the minimal distance sum for the optimal assignment of boxes to target.
+	 * uses the hungarian algorithm - too slow */
+	@Deprecated
 	public int distanceSumHungarian() {
 		int[][] matrix = new int[boxes.length][targets.length];
 		for (int boxnr = 0; boxnr < boxes.length; boxnr++) {

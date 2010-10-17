@@ -6,7 +6,7 @@ import java.util.List;
  * A class to move the player around to push the boxes.
  * 
  * It takes two arguments, a board to search and a list of moves for the
- * boxes to solve the board. It then uses Dejikstras algorithmen to preform
+ * boxes to solve the board. It then uses Dijkstras algorithmen to preform
  * a graph search to find the shortest way from the player position to the
  * pushing position for every push until the list of moves is empty, meaning
  * that the board is solved.

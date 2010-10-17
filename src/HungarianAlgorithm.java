@@ -1,5 +1,13 @@
 
-
+/**
+ * This class implements the Hungarian Algorithm for assigning boxes to targets
+ * to achieve the lowest possible total cost (=distance)
+ * 
+ * see http://en.wikipedia.org/wiki/Hungarian_algorithm for a description of the algorithm.
+ * 
+ * unfortunately, it is too slow.
+ * 
+ */
 public class HungarianAlgorithm {
 	
 	private int originalMatrix[][];
@@ -127,6 +135,11 @@ public class HungarianAlgorithm {
 		assignedCount++;
 	}
 
+	/**
+	 * Tries to assign a row to a column.
+	 * The first assignable row get assigned, even if there are multiple zeros.
+	 * @return true if at least one row is assigned
+	 */
 	private boolean assignStepAssignAny() {
 		//System.out.println("doing any assign");
 		for (int row = 0; row < matrix.length; row++) {
@@ -207,12 +220,12 @@ public class HungarianAlgorithm {
 			//System.out.println("step1");
 
 			subtractRows();
-			if (assign()) return findSolution();
+			//if (assign()) return findSolution();
 	
 			// Step 2
 			//printMatrix(matrix);
 			//System.out.println("step2");
-			resetAssignments();
+			//resetAssignments();
 			subtractCols();
 			if (assign()) return findSolution();
 	

@@ -3,7 +3,6 @@
 
 /**
  * A class for storing positions (x/y coordinate pairs)
- * TODO: REMOVE from usage whereever possible. This class wastes LOTS of memory.
  * @author Jan
  */
 public class Pos implements Cloneable {

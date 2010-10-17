@@ -10,7 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-
+/**
+ * This class loads and parses boards from the server or from files and sends/checks solutions
+ *
+ */
 public class BoardLoader {
 	
 	public static Board loadFromString(String boardstring) {

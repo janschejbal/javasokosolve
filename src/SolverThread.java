@@ -1,7 +1,7 @@
 import java.util.List;
 
 /**
- * 
+ * helper for SolveServerBoards. Runs the solver in a separate thread to make it easy to stop it after a time limit.
  */
 
 public class SolverThread extends Thread {
@@ -18,7 +18,7 @@ public class SolverThread extends Thread {
 	@Override
 	public void run() {
 		LDFSSolver solver = new LDFSSolver(board);
-		List<Move> tmpSolution = solver.solve(3000, 100);
+		List<Move> tmpSolution = solver.solve(3000, 400);
 		solution = tmpSolution;
 		isFinished = true;
 		synchronized (waitingObject) {

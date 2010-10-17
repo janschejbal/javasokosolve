@@ -1,4 +1,5 @@
 
+/** a few levels for testing */
 public class Levels {
 	public static final String SIMPLETEST1 =
 		"#########\n"+

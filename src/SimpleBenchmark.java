@@ -7,9 +7,12 @@ import java.util.List;
  * A class derived from SolvesServerBoards. It randomly tries to solve 100 levels and then outputs the percentage solved,
  * and the time it took to solve them in minutes.
  * 
+ * (deprecated, use adapted solveServerBoards instead)
+ * 
  * @author aiquen
  *
  */
+@Deprecated
 public class SimpleBenchmark {
 	private static final int TIMEOUT = 60000;
 	

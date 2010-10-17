@@ -2,10 +2,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-
+/** class for manual testing */
 public class Tests {
-
-	// TODO Idea: Multithreading by separating trees?
 	
 	/**
 	 * @param args
@@ -14,10 +12,10 @@ public class Tests {
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {		
 		Board b = BoardLoader.loadFromLevelFile(
-				"/home/aiquen/syasokoban-2.0.1/data/sokoban/levels/default.txt", 0);
+//				"/home/aiquen/syasokoban-2.0.1/data/sokoban/levels/default.txt", 0);
 //				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\dimitri_and_yorick.txt",
-//				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\default.txt",
-//				0);
+				"C:\\tools\\apps\\games\\SYASokoban\\data\\sokoban\\levels\\default.txt",
+				0);
 		
 		
 //		Board b = BoardLoader.loadFromServer(1);

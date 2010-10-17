@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A solver based on a limited depth first search
+ * A solver based on a limited/iterative depth first search
  * @author Jan
  *
  */
