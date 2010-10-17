@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * A class representing a Sokoban board in a manner suitable for fast AI operations.
- * @author Jan
  */
 public class Board {
 	
@@ -178,9 +177,6 @@ public class Board {
 			if (floor[currSafeTile.x][currSafeTile.y+1] && floor[currSafeTile.x][currSafeTile.y+2])
 				newSafeTiles.add(new Pos(currSafeTile.x,(byte)(currSafeTile.y+1)));
 		}
-		//System.out.println("Calculated safe tiles");
-		//System.out.println(this.toString());
-		//printMap(safeTiles, '*',' ');
 		
 	}
 
