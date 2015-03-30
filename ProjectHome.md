@@ -1,0 +1,1 @@
+This is a simple sokoban solver created as part of an university project.
